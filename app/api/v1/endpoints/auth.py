@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
 from app.repositories.user import UserRepository
-from app.schemas.auth import RegisterRequest
+from app.schemas.auth import RegisterRequest, UserResponse
 from app.services.auth import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -13,6 +13,7 @@ def get_auth_service() -> AuthService:
 
 @router.post(
     "/register",
+    response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
 )
 async def register(

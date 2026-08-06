@@ -16,3 +16,11 @@ class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+
+
+class UserResponse(BaseModel):
+    id: str
+    username: str
+    email: EmailStr
+    is_active: bool
+    is_verified: bool
