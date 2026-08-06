@@ -18,6 +18,7 @@ dependencies = [
     "pymongo>=4.13.2",
     "pwdlib[argon2]>=0.3.0",
     "python-jose[cryptography]>=3.5.0",
+    "pyjwt>=2.13.0",
 ]
 
 [dependency-groups]
