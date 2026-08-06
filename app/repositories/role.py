@@ -3,5 +3,5 @@ from app.repositories.base import BaseRepository
 
 
 class RoleRepository(BaseRepository[Role]):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(Role)

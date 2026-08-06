@@ -3,7 +3,7 @@ from app.repositories.base import BaseRepository
 
 
 class UserRepository(BaseRepository[User]):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(User)
 
     async def get_by_email(

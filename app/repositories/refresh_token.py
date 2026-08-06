@@ -5,7 +5,7 @@ from app.repositories.base import BaseRepository
 class RefreshTokenRepository(
     BaseRepository[RefreshToken]
 ):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(RefreshToken)
 
     async def get_by_token(
