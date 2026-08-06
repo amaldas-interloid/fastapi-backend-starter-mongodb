@@ -1,26 +1,18 @@
-import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import UUID, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
-
-
-class UUIDPrimaryKeyMixin:
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-    )
+from pydantic import Field
 
 
 class TimestampMixin:
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(UTC),
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC)
     )
 
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        default=lambda: datetime.now(UTC),
-        onupdate=lambda: datetime.now(UTC),
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC)
     )
+
+
+class SoftDeleteMixin:
+    is_deleted: bool = False
+    deleted_at: datetime | None = None

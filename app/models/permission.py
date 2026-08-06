@@ -1,32 +1,14 @@
-from typing import TYPE_CHECKING
+from typing import Annotated
 
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from beanie import Indexed
 
-from app.db.base import Base
-from app.models.associations import role_permissions
-from app.models.base_model import BaseModelMixin
-
-if TYPE_CHECKING:
-    from app.models.role import Role
+from app.models.base_document import BaseDocument
 
 
-class Permission(BaseModelMixin, Base):
-    __tablename__ = "permissions"
+class Permission(BaseDocument):
+    name: Annotated[str, Indexed(unique=True)]
 
-    name: Mapped[str] = mapped_column(
-        String(100),
-        unique=True,
-        nullable=False,
-        index=True,
-    )
+    description: str | None = None
 
-    description: Mapped[str | None] = mapped_column(
-        String(255),
-        nullable=True,
-    )
-
-    roles: Mapped[list["Role"]] = relationship(
-        secondary=role_permissions,
-        back_populates="permissions",
-    )
+    class Settings:
+        name = "permissions"
