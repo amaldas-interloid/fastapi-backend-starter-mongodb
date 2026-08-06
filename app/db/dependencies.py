@@ -1,15 +1,11 @@
-from collections.abc import AsyncGenerator
+from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.config import settings
+from app.db.database import mongodb
 
-from app.db.session import AsyncSessionLocal
 
+def get_database() -> AsyncIOMotorDatabase:
+    if mongodb.client is None:
+        raise RuntimeError("MongoDB is not connected.")
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
+    return mongodb.client[settings.DATABASE_NAME]
