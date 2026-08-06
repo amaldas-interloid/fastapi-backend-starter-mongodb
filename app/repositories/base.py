@@ -1,52 +1,38 @@
 from typing import Generic, TypeVar
-from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from beanie import Document
 
-from app.db.base import Base
-
-ModelType = TypeVar("ModelType", bound=Base)
+DocumentType = TypeVar("DocumentType", bound=Document)
 
 
-class BaseRepository(Generic[ModelType]):
-    def __init__(
-        self,
-        session: AsyncSession,
-        model: type[ModelType],
-    ) -> None:
-        self.session = session
+class BaseRepository(Generic[DocumentType]):
+    def __init__(self, model: type[DocumentType]):
         self.model = model
 
-    async def get_by_id(
-        self,
-        id: UUID,
-    ) -> ModelType | None:
-        return await self.session.get(self.model, id)
+    async def create(self, data: dict) -> DocumentType:
+        document = self.model(**data)
+        await document.insert()
+        return document
 
-    async def get_all(self) -> list[ModelType]:
-        result = await self.session.execute(
-            select(self.model)
-        )
-        return list(result.scalars().all())
+    async def get_by_id(self, document_id: str) -> DocumentType | None:
+        return await self.model.get(document_id)
 
-    async def create(
+    async def get_all(self) -> list[DocumentType]:
+        return await self.model.find_all().to_list()
+
+    async def update(
         self,
-        obj: ModelType,
-    ) -> ModelType:
-        self.session.add(obj)
-        await self.session.flush()
-        await self.session.refresh(obj)
-        return obj
+        document: DocumentType,
+        data: dict,
+    ) -> DocumentType:
+        for key, value in data.items():
+            setattr(document, key, value)
+
+        await document.save()
+        return document
 
     async def delete(
         self,
-        obj: ModelType,
+        document: DocumentType,
     ) -> None:
-        await self.session.delete(obj)
-
-    async def exists(
-        self,
-        id: UUID,
-    ) -> bool:
-        return await self.get_by_id(id) is not None
+        await document.delete()
