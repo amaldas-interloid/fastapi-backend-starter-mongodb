@@ -2,10 +2,12 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import jwt
+from jwt import ExpiredSignatureError, InvalidTokenError
 from pwdlib import PasswordHash
 
 from app.core.config import settings
 from app.enums.token import TokenType
+from app.schemas.token import TokenPayload
 
 password_hash = PasswordHash.recommended()
 
@@ -64,9 +66,17 @@ def create_refresh_token(
     )
 
 
-def decode_token(token: str) -> dict[str, Any]:
-    return jwt.decode(
-        token,
-        settings.JWT_SECRET_KEY,
-        algorithms=[settings.JWT_ALGORITHM],
-    )
+def decode_token(token: str) -> TokenPayload:
+    try:
+        payload = jwt.decode(
+            token,
+            settings.JWT_SECRET_KEY,
+            algorithms=[settings.JWT_ALGORITHM],
+        )
+        return TokenPayload(**payload)
+
+    except ExpiredSignatureError as exc:
+        raise InvalidTokenError("Token has expired") from exc
+
+    except InvalidTokenError as exc:
+        raise InvalidTokenError("Invalid token") from exc
