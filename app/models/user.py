@@ -7,9 +7,19 @@ from app.models.base_document import BaseDocument
 
 
 class User(BaseDocument):
-    email: Annotated[EmailStr, Indexed(unique=True)]
+    email: Annotated[
+        EmailStr,
+        Indexed(unique=True),
+    ]
 
-    username: Annotated[str, Indexed(unique=True)]
+    username: Annotated[
+        str,
+        Indexed(unique=True),
+    ]
+
+    first_name: str
+
+    last_name: str
 
     hashed_password: str
 

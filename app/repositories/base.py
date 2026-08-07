@@ -1,7 +1,6 @@
 from typing import Any, Generic, TypeVar
 
 from beanie import Document
-from pydantic import BaseModel
 
 DocumentType = TypeVar("DocumentType", bound=Document)
 
@@ -12,12 +11,8 @@ class BaseRepository(Generic[DocumentType]):
 
     async def create(
         self,
-        data: dict[str, Any] | BaseModel,
+        document: DocumentType,
     ) -> DocumentType:
-        if isinstance(data, BaseModel):
-            data = data.model_dump()
-
-        document = self.model(**data)
         await document.insert()
         return document
 

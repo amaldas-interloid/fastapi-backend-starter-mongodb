@@ -14,11 +14,10 @@ dependencies = [
     "pydantic-settings>=2.14.2",
     "python-dotenv>=1.2.2",
     "beanie >= 2.1.0",
-    "motor>=3.7.1",
-    "pymongo>=4.13.2",
+    "pymongo[srv]>=4.13,<4.17",
     "pwdlib[argon2]>=0.3.0",
-    "python-jose[cryptography]>=3.5.0",
     "pyjwt>=2.13.0",
+    "email-validator>=2.3.0",
 ]
 
 [dependency-groups]

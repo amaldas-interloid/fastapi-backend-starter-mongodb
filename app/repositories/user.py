@@ -10,10 +10,10 @@ class UserRepository(BaseRepository[User]):
         self,
         email: str,
     ) -> User | None:
-        return await User.find_one(User.email == email)
+        return await User.find_one({"email": email})
 
     async def get_by_username(
         self,
         username: str,
     ) -> User | None:
-        return await User.find_one(User.username == username)
+        return await User.find_one({"username": username})

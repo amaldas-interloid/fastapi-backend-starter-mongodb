@@ -2,11 +2,14 @@ from datetime import UTC, datetime, timedelta
 
 from pydantic import Field
 
+from app.core.config import settings
 from app.models.base_document import BaseDocument
 
 
 def refresh_token_expiry() -> datetime:
-    return datetime.now(UTC) + timedelta(days=7)
+    return datetime.now(UTC) + timedelta(
+        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+    )
 
 
 class RefreshToken(BaseDocument):
@@ -21,4 +24,4 @@ class RefreshToken(BaseDocument):
     is_revoked: bool = False
 
     class Settings:
-        name = "refresh_tokens"
+        name = "refresh_tokens" 

@@ -5,6 +5,7 @@ import jwt
 from pwdlib import PasswordHash
 
 from app.core.config import settings
+from app.enums.token import TokenType
 
 password_hash = PasswordHash.recommended()
 
@@ -24,16 +25,16 @@ def verify_password(
 
 
 def create_access_token(
-    subject: str,
+    user_id: str,
 ) -> str:
     expire = datetime.now(UTC) + timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
     payload: dict[str, Any] = {
-        "sub": subject,
+        "sub": user_id,
         "exp": expire,
-        "type": "access",
+        "type": TokenType.ACCESS.value,
     }
 
     return jwt.encode(
@@ -44,16 +45,16 @@ def create_access_token(
 
 
 def create_refresh_token(
-    subject: str,
+    user_id: str,
 ) -> str:
     expire = datetime.now(UTC) + timedelta(
         days=settings.REFRESH_TOKEN_EXPIRE_DAYS
     )
 
     payload: dict[str, Any] = {
-        "sub": subject,
+        "sub": user_id,
         "exp": expire,
-        "type": "refresh",
+        "type": TokenType.REFRESH.value,
     }
 
     return jwt.encode(
