@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from app.exceptions.exceptions import (
     InactiveUserException,
     InvalidCredentialsException,
+    InvalidRefreshTokenException,
     UserAlreadyExistsException,
     UsernameAlreadyExistsException,
 )
@@ -57,5 +58,14 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "detail": "User account is inactive."
             },
         )
-    
-    
+    @app.exception_handler(InvalidRefreshTokenException)
+    async def invalid_refresh_token_exception_handler(
+        request: Request,
+        exc: InvalidRefreshTokenException,
+    )-> JSONResponse:
+        return JSONResponse(
+            status_code= status.HTTP_401_UNAUTHORIZED,
+            content= {
+                "detail": "Invalid Refresh_token"
+            },
+        )

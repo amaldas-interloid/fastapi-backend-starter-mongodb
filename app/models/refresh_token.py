@@ -17,6 +17,10 @@ class RefreshToken(BaseDocument):
 
     token: str
 
+    jti: str
+
+    family_id: str
+    
     expires_at: datetime = Field(
         default_factory=refresh_token_expiry
     )

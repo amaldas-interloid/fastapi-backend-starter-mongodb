@@ -1,12 +1,17 @@
+from uuid import uuid4
+
 from app.core.security import (
     create_access_token,
     create_refresh_token,
+    decode_token,
     hash_password,
     verify_password,
 )
+from app.enums.token import TokenType
 from app.exceptions.exceptions import (
     InactiveUserException,
     InvalidCredentialsException,
+    InvalidRefreshTokenException,
     UserAlreadyExistsException,
     UsernameAlreadyExistsException,
 )
@@ -20,6 +25,7 @@ from app.schemas.auth import (
     RegisterResponse,
     TokenResponse,
 )
+from app.schemas.token import RefreshTokenRequest
 
 
 class AuthService:
@@ -89,11 +95,14 @@ class AuthService:
             raise InactiveUserException()
         
         access_token = create_access_token(user.id)
-        refresh_token = create_refresh_token(user.id)
+        refresh_token, jti = create_refresh_token(user.id)
+        family_id = str(uuid4())
 
         refresh_token_document = RefreshToken(
             user_id=user.id,
             token=refresh_token,
+            jti=jti,
+            family_id=family_id,
         )
 
         await self.refresh_token_repository.create(
@@ -104,5 +113,90 @@ class AuthService:
             access_token=access_token,
             refresh_token=refresh_token,
         )
+    
+    async def refresh_token(
+        self,
+        request: RefreshTokenRequest,
+    ) -> TokenResponse:
+
+        payload = decode_token(request.refresh_token)
+
+        if payload.type != TokenType.REFRESH:
+            raise InvalidRefreshTokenException()
+
+        stored_token = await self.refresh_token_repository.get_by_token(
+            request.refresh_token
+        )
+
+        if stored_token is None:
+            raise InvalidRefreshTokenException()
+        
+        if stored_token.is_revoked:
+            await self.refresh_token_repository.revoke_family(
+                stored_token.family_id,
+            )
+
+            raise InvalidRefreshTokenException()
+
+
+        if not await self.refresh_token_repository.is_valid(
+            stored_token,
+        ):
+            raise InvalidRefreshTokenException()
+
+        user = await self.user_repository.get_by_id(
+            payload.sub,
+        )
+
+        if user is None or not user.is_active:
+            raise InvalidRefreshTokenException()
+        
+        # Revoke the old refresh token
+        await self.refresh_token_repository.revoke(
+        stored_token,
+        )
+
+        # Create new access token
+        access_token = create_access_token(user.id)
+
+        # Create new refresh token
+        new_refresh_token, new_jti = create_refresh_token(user.id)
+
+        # Keep the same token family
+        new_refresh_token_document = RefreshToken(
+            user_id=user.id,
+            token=new_refresh_token,
+            jti=new_jti,
+            family_id=stored_token.family_id,
+        )
+
+        await self.refresh_token_repository.create(
+            new_refresh_token_document,
+        )
+
+        return TokenResponse(
+            access_token=access_token,
+            refresh_token=new_refresh_token,
+        )
+    async def logout(
+        self,
+        request: RefreshTokenRequest,
+    ) -> None:
+        stored_token = await self.refresh_token_repository.get_by_token(
+            request.refresh_token,
+        )
+
+        if stored_token is None:
+            raise InvalidRefreshTokenException()
+
+        if stored_token.is_revoked:
+            raise InvalidRefreshTokenException()
+
+        await self.refresh_token_repository.revoke(
+            stored_token,
+        )
+
+    
+    
 
     

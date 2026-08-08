@@ -1,5 +1,6 @@
 from datetime import UTC, datetime, timedelta
 from typing import Any
+from uuid import uuid4
 
 import jwt
 from jwt import ExpiredSignatureError, InvalidTokenError
@@ -48,22 +49,26 @@ def create_access_token(
 
 def create_refresh_token(
     user_id: str,
-) -> str:
+) -> tuple[str,str]:
+    jti = str(uuid4())
+    
     expire = datetime.now(UTC) + timedelta(
         days=settings.REFRESH_TOKEN_EXPIRE_DAYS
     )
 
     payload: dict[str, Any] = {
         "sub": user_id,
+        "jti": jti,
         "exp": expire,
         "type": TokenType.REFRESH.value,
     }
 
-    return jwt.encode(
+    token = jwt.encode(
         payload,
         settings.JWT_SECRET_KEY,
         algorithm=settings.JWT_ALGORITHM,
     )
+    return token,jti
 
 
 def decode_token(token: str) -> TokenPayload:

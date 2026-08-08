@@ -11,8 +11,13 @@ class BaseRepository(Generic[DocumentType]):
 
     async def create(
         self,
-        document: DocumentType,
+        data: DocumentType | dict[str, Any],
     ) -> DocumentType:
+        if isinstance(data, self.model):
+            document= data
+        else:
+            document =self.model(**data)
+            
         await document.insert()
         return document
 

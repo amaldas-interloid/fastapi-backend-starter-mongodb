@@ -16,3 +16,5 @@ class InvalidCredentialsException(AppException):
 class InactiveUserException(AppException):
     """Raised when the user account is inactive."""
 
+class InvalidRefreshTokenException(AppException):
+    pass
