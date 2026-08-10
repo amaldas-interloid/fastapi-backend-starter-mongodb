@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, gt=0)
     REFRESH_TOKEN_EXPIRE_DAYS: int = Field(default=7, gt=0)
 
+    #seed default password
+    SEED_DEFAULT_PASSWORD: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
