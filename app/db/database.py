@@ -36,3 +36,13 @@ async def connect_to_mongodb() -> None:
 async def close_mongodb_connection() -> None:
     if mongodb.client is not None:
         await mongodb.client.close()
+
+async def check_mongodb_connection() -> bool:
+    if mongodb.client is None:
+        return False
+
+    try:
+        await mongodb.client.admin.command("ping")
+        return True
+    except Exception:
+        return False    
