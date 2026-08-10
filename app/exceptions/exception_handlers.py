@@ -20,7 +20,9 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={
-                "detail": "Email already exists.",
+                "success": False,
+                "message": "Email already exists.",
+                "data": None,
             },
         )
 
@@ -32,7 +34,9 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={
-                "detail": "Username already exists.",
+                "success": False,
+                "message": "Username already exists.",
+                "data": None,
             },
         )
 
@@ -43,7 +47,11 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            content={"detail": "Invalid email or password."},
+            content={
+                "success":False,
+                "message": "Invalid email or password.",
+                "data": None,
+                },
         )
 
     @app.exception_handler(InactiveUserException)
@@ -53,7 +61,11 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
-            content={"detail": "User account is inactive."},
+            content={
+                "success":False,
+                "message": "User account is inactive.",
+                "data": None,
+                },
         )
 
     @app.exception_handler(InvalidRefreshTokenException)
@@ -63,7 +75,11 @@ def register_exception_handlers(app: FastAPI) -> None:
     ) -> JSONResponse:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            content={"detail": "Invalid Refresh_token"},
+            content={
+                "success":False,
+                "message": "Invalid refresh token.",
+                "data": None,
+                },
         )
 
     @app.exception_handler(ForbiddenException)
@@ -74,6 +90,8 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
             content={
-                "detail": "You do not have permission to perform this action.",
+                "success": False,
+                "message": "You do not have permission to perform this action.",
+                "data": None,
             },
         )
