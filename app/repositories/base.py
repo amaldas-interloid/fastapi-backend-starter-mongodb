@@ -2,6 +2,11 @@ from typing import Any, Generic, TypeVar
 
 from beanie import Document
 
+from app.schemas.pagination import (
+    PaginatedResponse,
+    PaginationResponse,
+)
+
 DocumentType = TypeVar("DocumentType", bound=Document)
 
 
@@ -46,3 +51,33 @@ class BaseRepository(Generic[DocumentType]):
         document: DocumentType,
     ) -> None:
         await document.delete()
+
+    async def get_paginated(
+            self,
+            page: int,
+            page_size: int,
+    ) -> PaginatedResponse:
+        skip = (page - 1) * page_size
+
+        total = await self.model.count()
+
+        documents = (
+            await self.model.find_all()
+            .skip(skip)
+            .limit(page_size)
+            .to_list()
+        )
+
+        pages = (total + page_size - 1) // page_size
+
+        return PaginatedResponse(
+            items=documents,
+            pagination=PaginationResponse(
+                page=page,
+                page_size=page_size,
+                total=total,
+                pages=pages
+            )
+        )
+        
+        
