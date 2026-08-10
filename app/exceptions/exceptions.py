@@ -9,6 +9,7 @@ class UserAlreadyExistsException(AppException):
 class UsernameAlreadyExistsException(AppException):
     """Raised when a username already exists."""
 
+
 class InvalidCredentialsException(AppException):
     """Raised when email or password is invalid."""
 
@@ -16,5 +17,10 @@ class InvalidCredentialsException(AppException):
 class InactiveUserException(AppException):
     """Raised when the user account is inactive."""
 
+
 class InvalidRefreshTokenException(AppException):
     pass
+
+
+class ForbiddenException(AppException):
+    """Raised when an authenticated user lacks permission."""

@@ -5,7 +5,7 @@ from app.api.v1.endpoints.health import router as health_router
 from app.api.v1.endpoints.users import router as users_router
 
 api_router = APIRouter(
-    prefix= "/api/v1",
+    prefix="/api/v1",
 )
 
 api_router.include_router(health_router)

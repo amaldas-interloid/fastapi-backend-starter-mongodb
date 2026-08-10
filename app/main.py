@@ -46,6 +46,7 @@ app.add_middleware(ProcessTimeMiddleware)
 
 app.include_router(api_router)
 
+
 @app.get("/")
 async def root():
     return {

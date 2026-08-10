@@ -15,7 +15,7 @@ class BaseDocument(
 
     model_config = ConfigDict(
         populate_by_name=True,
-    )   
+    )
 
     class Settings:
         use_state_management = True

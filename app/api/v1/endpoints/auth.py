@@ -33,7 +33,7 @@ def get_auth_service() -> AuthService:
 async def register(
     request: RegisterRequest,
     auth_service: AuthService = Depends(get_auth_service),
-)->APIResponse[RegisterResponse]:
+) -> APIResponse[RegisterResponse]:
     user = await auth_service.register_user(request)
 
     return APIResponse(
@@ -42,6 +42,7 @@ async def register(
         data=user,
     )
 
+
 @router.post(
     "/login",
     response_model=APIResponse[TokenResponse],
@@ -49,7 +50,7 @@ async def register(
 async def login(
     request: LoginRequest,
     auth_service: AuthService = Depends(get_auth_service),
-)->APIResponse[TokenResponse]:
+) -> APIResponse[TokenResponse]:
     token = await auth_service.login_user(request)
 
     return APIResponse(
@@ -58,21 +59,23 @@ async def login(
         data=token,
     )
 
+
 @router.post(
     "/refresh",
     response_model=APIResponse[TokenResponse],
-    status_code= status.HTTP_200_OK,
+    status_code=status.HTTP_200_OK,
 )
 async def refresh_token(
     request: RefreshTokenRequest,
-     auth_service: AuthService = Depends(get_auth_service),
+    auth_service: AuthService = Depends(get_auth_service),
 ) -> APIResponse[TokenResponse]:
     token = await auth_service.refresh_token(request)
     return APIResponse(
-        success= True,
-        message= "Token refreshed successfully",
+        success=True,
+        message="Token refreshed successfully",
         data=token,
     )
+
 
 @router.post(
     "/logout",
@@ -89,5 +92,3 @@ async def logout(
         success=True,
         message="Logout successful",
     )
-
-

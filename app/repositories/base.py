@@ -14,10 +14,10 @@ class BaseRepository(Generic[DocumentType]):
         data: DocumentType | dict[str, Any],
     ) -> DocumentType:
         if isinstance(data, self.model):
-            document= data
+            document = data
         else:
-            document =self.model(**data)
-            
+            document = self.model(**data)
+
         await document.insert()
         return document
 

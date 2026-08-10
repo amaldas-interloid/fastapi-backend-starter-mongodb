@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from app.exceptions.exceptions import (
+    ForbiddenException,
     InactiveUserException,
     InvalidCredentialsException,
     InvalidRefreshTokenException,
@@ -34,38 +35,45 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "detail": "Username already exists.",
             },
         )
-    
+
     @app.exception_handler(InvalidCredentialsException)
     async def invalid_credentials_exception_handler(
         request: Request,
         exc: InvalidCredentialsException,
-    )-> JSONResponse:
+    ) -> JSONResponse:
         return JSONResponse(
-            status_code= status.HTTP_401_UNAUTHORIZED,
-            content={
-                "detail": "Invalid email or password."
-            },
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"detail": "Invalid email or password."},
         )
 
     @app.exception_handler(InactiveUserException)
     async def inactive_user_exception_handler(
         request: Request,
         exc: InactiveUserException,
-    )->JSONResponse:
+    ) -> JSONResponse:
         return JSONResponse(
-            status_code= status.HTTP_403_FORBIDDEN,
-            content={
-                "detail": "User account is inactive."
-            },
+            status_code=status.HTTP_403_FORBIDDEN,
+            content={"detail": "User account is inactive."},
         )
+
     @app.exception_handler(InvalidRefreshTokenException)
     async def invalid_refresh_token_exception_handler(
         request: Request,
         exc: InvalidRefreshTokenException,
-    )-> JSONResponse:
+    ) -> JSONResponse:
         return JSONResponse(
-            status_code= status.HTTP_401_UNAUTHORIZED,
-            content= {
-                "detail": "Invalid Refresh_token"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={"detail": "Invalid Refresh_token"},
+        )
+
+    @app.exception_handler(ForbiddenException)
+    async def forbidden_exception_handler(
+        request: Request,
+        exc: ForbiddenException,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_403_FORBIDDEN,
+            content={
+                "detail": "You do not have permission to perform this action.",
             },
         )

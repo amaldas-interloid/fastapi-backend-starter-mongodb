@@ -103,6 +103,7 @@ async def test_register_user_success(
         created_user,
     )
 
+
 @pytest.mark.anyio
 async def test_register_duplicate_email(
     auth_service,

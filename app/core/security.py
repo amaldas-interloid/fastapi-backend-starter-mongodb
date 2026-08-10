@@ -30,9 +30,7 @@ def verify_password(
 def create_access_token(
     user_id: str,
 ) -> str:
-    expire = datetime.now(UTC) + timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-    )
+    expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     payload: dict[str, Any] = {
         "sub": user_id,
@@ -49,12 +47,10 @@ def create_access_token(
 
 def create_refresh_token(
     user_id: str,
-) -> tuple[str,str]:
+) -> tuple[str, str]:
     jti = str(uuid4())
-    
-    expire = datetime.now(UTC) + timedelta(
-        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
-    )
+
+    expire = datetime.now(UTC) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     payload: dict[str, Any] = {
         "sub": user_id,
@@ -68,7 +64,7 @@ def create_refresh_token(
         settings.JWT_SECRET_KEY,
         algorithm=settings.JWT_ALGORITHM,
     )
-    return token,jti
+    return token, jti
 
 
 def decode_token(token: str) -> TokenPayload:

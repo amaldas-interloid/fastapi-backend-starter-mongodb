@@ -6,8 +6,7 @@ class RoleRepository(BaseRepository[Role]):
     def __init__(self) -> None:
         super().__init__(Role)
 
-    async def get_by_name(self,name:str)->Role | None:
+    async def get_by_name(self, name: str) -> Role | None:
         return await self.model.find_one(
             self.model.name == name,
         )
-    

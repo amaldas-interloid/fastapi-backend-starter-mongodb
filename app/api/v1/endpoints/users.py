@@ -31,6 +31,6 @@ async def get_me(
     )
     return APIResponse(
         success=True,
-        message= "User profile retrieved successfully",
-        data= user,
+        message="User profile retrieved successfully",
+        data=user,
     )
