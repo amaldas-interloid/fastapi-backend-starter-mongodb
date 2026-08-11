@@ -18,9 +18,16 @@ class InactiveUserException(AppException):
     """Raised when the user account is inactive."""
 
 
+class InvalidTokenException(AppException):
+    """Raised when an access token is invalid or expired."""
+
+
 class InvalidRefreshTokenException(AppException):
     pass
 
 
 class ForbiddenException(AppException):
     """Raised when an authenticated user lacks permission."""
+
+class RequestValidationError(AppException):
+    pass

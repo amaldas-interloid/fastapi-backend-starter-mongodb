@@ -11,5 +11,19 @@ class RolePermissionRepository(BaseRepository[RolePermission]):
         role_id: str,
     ) -> list[RolePermission]:
         return await self.model.find(
-            self.model.role_id == role_id,
+            {
+                "role_id": role_id,
+            }
         ).to_list()
+
+    async def get_by_role_and_permission(
+        self,
+        role_id: str,
+        permission_id: str,
+    ) -> RolePermission | None:
+        return await self.model.find_one(
+            {
+                "role_id": role_id,
+                "permission_id": permission_id,
+            }
+        )

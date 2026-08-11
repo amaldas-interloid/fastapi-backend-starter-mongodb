@@ -6,7 +6,12 @@ class PermissionRepository(BaseRepository[Permission]):
     def __init__(self) -> None:
         super().__init__(Permission)
 
-    async def get_by_name(self, name: str) -> Permission | None:
+    async def get_by_name(
+        self,
+        name: str,
+    ) -> Permission | None:
         return await self.model.find_one(
-            self.model.name == name,
+            {
+                "name": name,
+            }
         )

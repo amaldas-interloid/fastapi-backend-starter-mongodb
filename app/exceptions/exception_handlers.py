@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.exceptions.exceptions import (
@@ -6,6 +7,7 @@ from app.exceptions.exceptions import (
     InactiveUserException,
     InvalidCredentialsException,
     InvalidRefreshTokenException,
+    InvalidTokenException,
     UserAlreadyExistsException,
     UsernameAlreadyExistsException,
 )
@@ -48,10 +50,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={
-                "success":False,
+                "success": False,
                 "message": "Invalid email or password.",
                 "data": None,
-                },
+            },
         )
 
     @app.exception_handler(InactiveUserException)
@@ -62,10 +64,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
             content={
-                "success":False,
+                "success": False,
                 "message": "User account is inactive.",
                 "data": None,
-                },
+            },
         )
 
     @app.exception_handler(InvalidRefreshTokenException)
@@ -76,10 +78,10 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={
-                "success":False,
+                "success": False,
                 "message": "Invalid refresh token.",
                 "data": None,
-                },
+            },
         )
 
     @app.exception_handler(ForbiddenException)
@@ -91,7 +93,67 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_403_FORBIDDEN,
             content={
                 "success": False,
-                "message": "You do not have permission to perform this action.",
+                "message": (
+                    "You do not have permission "
+                    "to perform this action."
+                ),
                 "data": None,
             },
         )
+
+    @app.exception_handler(InvalidTokenException)
+    async def invalid_token_exception_handler(
+        request: Request,
+        exc: InvalidTokenException,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={
+                "success": False,
+                "message": exc.message,
+                "data": None,
+            },
+        )
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(
+        request: Request,
+        exc: HTTPException,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "success": False,
+                "message": str(exc.detail),
+                "data": None,
+            },
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        request: Request,
+        exc: RequestValidationError,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={
+                "success": False,
+                "message": "Validation error.",
+                "data": None,
+            },
+        )
+
+    @app.exception_handler(Exception)
+    async def generic_exception_handler(
+        request: Request,
+        exc: Exception,
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={
+                "success": False,
+                "message": "An unexpected error occurred.",
+                "data": None,
+            },
+        )
+

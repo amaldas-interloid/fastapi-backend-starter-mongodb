@@ -8,6 +8,7 @@ from pwdlib import PasswordHash
 
 from app.core.config import settings
 from app.enums.token import TokenType
+from app.exceptions.exceptions import InvalidTokenException
 from app.schemas.token import TokenPayload
 
 password_hash = PasswordHash.recommended()
@@ -77,7 +78,7 @@ def decode_token(token: str) -> TokenPayload:
         return TokenPayload(**payload)
 
     except ExpiredSignatureError as exc:
-        raise InvalidTokenError("Token has expired") from exc
+        raise InvalidTokenException("Token has expired") from exc
 
     except InvalidTokenError as exc:
-        raise InvalidTokenError("Invalid token") from exc
+        raise InvalidTokenException("Invalid token") from exc

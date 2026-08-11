@@ -10,7 +10,6 @@ from app.models.role_permission import RolePermission
 from app.models.user import User
 from app.models.user_role import UserRole
 
-
 PERMISSIONS = [
     {
         "name": "users:read",
@@ -86,12 +85,11 @@ ROLE_PERMISSIONS = {
     ],
     "manager": [
         "users:read",
-        "users:create",
         "users:update",
         "roles:read",
     ],
     "user": [
-        "users:read",
+
     ],
 }
 
