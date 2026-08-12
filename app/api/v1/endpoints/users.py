@@ -5,6 +5,7 @@ from app.api.deps import (
     require_permission,
 )
 from app.enums.permission import PermissionName
+from app.enums.sort import SortOrder, UserSortField
 from app.models.user import User
 from app.repositories.user import UserRepository
 from app.schemas.common import APIResponse
@@ -51,13 +52,25 @@ async def get_current_user_profile(
 async def get_users(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
-    service: UserService = Depends(get_user_service),
+    username: str | None = Query( default=None, min_length=1, max_length=50, ), 
+    email: str | None = Query( default=None, min_length=1, max_length=255, ), 
+    is_active: bool | None = Query( default=None, ), 
+    is_verified: bool | None = Query( default=None, ), 
+    sort_by: UserSortField = Query( default=UserSortField.CREATED_AT, ), 
+    sort_order: SortOrder = Query( default=SortOrder.DESC, ), 
+    service: UserService = Depends( get_user_service),
 ) -> APIResponse[PaginatedResponse[UserResponse]]:
     users, total = await service.get_users(
         page=page,
         page_size=page_size,
+        username=username,
+        email=email,
+        is_active=is_active,
+        is_verified=is_verified,
+        sort_by=sort_by,
+        sort_order=sort_order,
     )
-    total_pages = (total + page_size - 1) // page_size
+    total_pages = ((total + page_size - 1) // page_size if total > 0 else 0 )
 
     data = PaginatedResponse( 
         items=[ 

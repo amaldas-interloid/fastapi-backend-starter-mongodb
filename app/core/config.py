@@ -29,6 +29,13 @@ class Settings(BaseSettings):
     #seed default password
     SEED_DEFAULT_PASSWORD: str
 
+    REDIS_HOST: str 
+    REDIS_PORT: int 
+    REDIS_DB: int 
+
+    REDIS_RATE_LIMIT: int 
+    REDIS_RATE_LIMIT_WINDOW: int
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

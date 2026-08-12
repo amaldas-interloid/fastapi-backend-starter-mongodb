@@ -173,9 +173,20 @@ async def test_get_users(
     user_repository.get_all_users.assert_awaited_once_with(
         skip=2,
         limit=2,
+        username=None,
+        email=None,
+        is_active=None,
+        is_verified=None,
+        sort_by="created_at",
+        sort_order=-1,
     )
 
-    user_repository.count_users.assert_awaited_once()
+    user_repository.count_users.assert_awaited_once_with(
+        username=None,
+        email=None,
+        is_active=None,
+        is_verified=None,
+    )
 
 
 @pytest.mark.anyio

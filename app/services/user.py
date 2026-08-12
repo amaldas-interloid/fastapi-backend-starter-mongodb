@@ -1,4 +1,5 @@
 from app.core.security import hash_password
+from app.enums.sort import SortOrder, UserSortField
 from app.exceptions.exceptions import (
     UserAlreadyExistsException,
     UsernameAlreadyExistsException,
@@ -50,15 +51,36 @@ class UserService:
         self,
         page: int = 1,
         page_size: int = 20,
+        username: str | None = None,
+        email: str | None = None,
+        is_active: bool | None = None,
+        is_verified: bool | None = None,
+        sort_by: UserSortField = UserSortField.CREATED_AT,
+        sort_order: SortOrder = SortOrder.DESC,
     ) -> tuple[list[User], int]:
         skip = (page - 1) * page_size
+
+        sort_direction = (
+            1 if sort_order == SortOrder.ASC else -1
+        )
 
         users = await self.user_repository.get_all_users(
             skip=skip,
             limit=page_size,
+            username=username,
+            email=email,
+            is_active=is_active,
+            is_verified=is_verified,
+            sort_by=sort_by.value,
+            sort_order=sort_direction,
         )
 
-        total = await self.user_repository.count_users()
+        total = await self.user_repository.count_users(
+            username=username,
+            email=email,
+            is_active=is_active,
+            is_verified=is_verified,
+        )
 
         return users, total
 
