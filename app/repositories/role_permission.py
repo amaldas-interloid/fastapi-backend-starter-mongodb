@@ -27,3 +27,4 @@ class RolePermissionRepository(BaseRepository[RolePermission]):
                 "permission_id": permission_id,
             }
         )
+    

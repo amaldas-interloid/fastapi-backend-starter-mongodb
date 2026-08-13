@@ -47,7 +47,7 @@ class RefreshTokenRepository(BaseRepository[RefreshToken]):
     ) -> None:
         await RefreshToken.find(
             RefreshToken.family_id == family_id,
-            not RefreshToken.is_revoked,
+            RefreshToken.is_revoked == False, # noqa: E712
         ).set(
             {RefreshToken.is_revoked: True},
         )

@@ -96,7 +96,7 @@ ROLE_PERMISSIONS = {
 
 SEED_USERS = [
     {
-        "email": "admin@example.com",
+        "email": "amal@example.com",
         "username": "amaldas",
         "first_name": "amal",
         "last_name": "das",
@@ -105,7 +105,7 @@ SEED_USERS = [
         "is_verified": True,
     },
     {
-        "email": "manager@example.com",
+        "email": "vikram@example.com",
         "username": "vikram",
         "first_name": "vikram",
         "last_name": "anna",

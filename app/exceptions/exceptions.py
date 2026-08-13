@@ -18,8 +18,10 @@ class InactiveUserException(AppException):
     """Raised when the user account is inactive."""
 
 
-class InvalidTokenException(AppException):
-    """Raised when an access token is invalid or expired."""
+class InvalidTokenException(Exception):
+    def __init__(self, message: str = "Invalid or expired token."):
+        self.message = message
+        super().__init__(message)
 
 
 class InvalidRefreshTokenException(AppException):
