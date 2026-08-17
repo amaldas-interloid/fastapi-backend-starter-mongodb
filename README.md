@@ -157,13 +157,17 @@ uv venv
 
 source .venv/bin/activate
 
+# Install Dependencies
+
+uv sync
+
 # Configure Environment Variables
 
 Create a `.env` file in the project root.
 
 ```env
 
-APP_NAME=FastAPI Backend Starter
+AAPP_NAME=FastAPI Backend Starter
 APP_VERSION=1.0.0
 
 DEBUG=True
@@ -171,8 +175,9 @@ DEBUG=True
 HOST=0.0.0.0
 PORT=8000
 
-MONGODB_URL=your url
-MONGODB_DATABASE=fastapi_db
+# MongoDB Atlas
+MONGODB_URL=your-mongodb-atlas-url
+DATABASE_NAME=fastapi_db
 
 JWT_SECRET_KEY=your-secret-key
 JWT_ALGORITHM=HS256
@@ -180,12 +185,16 @@ JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_TOKEN_EXPIRE_DAYS=7
 
+# Redis
 REDIS_HOST=localhost
 REDIS_PORT=6379
 REDIS_DB=0
 
 REDIS_RATE_LIMIT=5
 REDIS_RATE_LIMIT_WINDOW=60
+
+# Seed
+SEED_DEFAULT_PASSWORD=your-default-password
 ```
 
 ---

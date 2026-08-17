@@ -93,10 +93,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_403_FORBIDDEN,
             content={
                 "success": False,
-                "message": (
-                    "You do not have permission "
-                    "to perform this action."
-                ),
+                "message": ("You do not have permission to perform this action."),
                 "data": None,
             },
         )
@@ -156,5 +153,3 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "data": None,
             },
         )
-    
-

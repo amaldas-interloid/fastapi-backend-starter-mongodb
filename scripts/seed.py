@@ -1,4 +1,3 @@
-
 import asyncio
 
 from app.core.config import settings
@@ -88,9 +87,7 @@ ROLE_PERMISSIONS = {
         "users:update",
         "roles:read",
     ],
-    "user": [
-
-    ],
+    "user": [],
 }
 
 
@@ -182,14 +179,9 @@ async def seed_permissions() -> dict[str, Permission]:
             permission = Permission(**data)
             await permission.insert()
 
-            print(
-                f"Created permission: {permission.name}"
-            )
+            print(f"Created permission: {permission.name}")
         else:
-            print(
-                f"Permission already exists: "
-                f"{permission.name}"
-            )
+            print(f"Permission already exists: {permission.name}")
 
         permissions[permission.name] = permission
 
@@ -210,9 +202,7 @@ async def seed_roles() -> dict[str, Role]:
 
             print(f"Created role: {role.name}")
         else:
-            print(
-                f"Role already exists: {role.name}"
-            )
+            print(f"Role already exists: {role.name}")
 
         roles[role.name] = role
 
@@ -240,18 +230,13 @@ async def seed_role_permissions(
                     permission_id=permission.id,
                 ).insert()
 
-                print(
-                    f"Assigned '{permission_name}' "
-                    f"to '{role_name}'"
-                )
+                print(f"Assigned '{permission_name}' to '{role_name}'")
 
 
 async def seed_users(
     roles: dict[str, Role],
 ) -> None:
-    hashed_password = hash_password(
-        settings.SEED_DEFAULT_PASSWORD
-    )
+    hashed_password = hash_password(settings.SEED_DEFAULT_PASSWORD)
 
     for data in SEED_USERS:
         user = await User.find_one(
@@ -271,13 +256,9 @@ async def seed_users(
 
             await user.insert()
 
-            print(
-                f"Created user: {user.email}"
-            )
+            print(f"Created user: {user.email}")
         else:
-            print(
-                f"User already exists: {user.email}"
-            )
+            print(f"User already exists: {user.email}")
 
         role = roles[data["role"]]
 
@@ -292,15 +273,9 @@ async def seed_users(
                 role_id=role.id,
             ).insert()
 
-            print(
-                f"Assigned '{data['role']}' role "
-                f"to '{user.email}'"
-            )
+            print(f"Assigned '{data['role']}' role to '{user.email}'")
         else:
-            print(
-                f"Role already assigned to "
-                f"'{user.email}'"
-            )
+            print(f"Role already assigned to '{user.email}'")
 
 
 async def seed() -> None:

@@ -31,5 +31,6 @@ class InvalidRefreshTokenException(AppException):
 class ForbiddenException(AppException):
     """Raised when an authenticated user lacks permission."""
 
+
 class RequestValidationError(AppException):
     pass

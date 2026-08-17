@@ -38,9 +38,9 @@ async def get_current_user_profile(
     current_user: User = Depends(get_current_user),
 ) -> APIResponse[UserResponse]:
     return APIResponse(
-       success=True, 
-       message="User profile retrieved successfully.", 
-       data=UserResponse.model_validate(current_user),
+        success=True,
+        message="User profile retrieved successfully.",
+        data=UserResponse.model_validate(current_user),
     )
 
 
@@ -52,13 +52,29 @@ async def get_current_user_profile(
 async def get_users(
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
-    username: str | None = Query( default=None, min_length=1, max_length=50, ), 
-    email: str | None = Query( default=None, min_length=1, max_length=255, ), 
-    is_active: bool | None = Query( default=None, ), 
-    is_verified: bool | None = Query( default=None, ), 
-    sort_by: UserSortField = Query( default=UserSortField.CREATED_AT, ), 
-    sort_order: SortOrder = Query( default=SortOrder.DESC, ), 
-    service: UserService = Depends( get_user_service),
+    username: str | None = Query(
+        default=None,
+        min_length=1,
+        max_length=50,
+    ),
+    email: str | None = Query(
+        default=None,
+        min_length=1,
+        max_length=255,
+    ),
+    is_active: bool | None = Query(
+        default=None,
+    ),
+    is_verified: bool | None = Query(
+        default=None,
+    ),
+    sort_by: UserSortField = Query(
+        default=UserSortField.CREATED_AT,
+    ),
+    sort_order: SortOrder = Query(
+        default=SortOrder.DESC,
+    ),
+    service: UserService = Depends(get_user_service),
 ) -> APIResponse[PaginatedResponse[UserResponse]]:
     users, total = await service.get_users(
         page=page,
@@ -70,26 +86,23 @@ async def get_users(
         sort_by=sort_by,
         sort_order=sort_order,
     )
-    total_pages = ((total + page_size - 1) // page_size if total > 0 else 0 )
+    total_pages = (total + page_size - 1) // page_size if total > 0 else 0
 
-    data = PaginatedResponse( 
-        items=[ 
-            UserResponse.model_validate(user) 
-            for user in users
-        ],
+    data = PaginatedResponse(
+        items=[UserResponse.model_validate(user) for user in users],
         pagination=PaginationResponse(
             page=page,
             page_size=page_size,
             total=total,
             pages=total_pages,
-        ), 
+        ),
     )
 
     return APIResponse(
         success=True,
         message="Users retrieved successfully.",
-        data=data, 
-        )
+        data=data,
+    )
 
 
 @router.get(
@@ -112,8 +125,8 @@ async def get_user(
     return APIResponse(
         success=True,
         message="User retrieved successfully.",
-        data=UserResponse.model_validate(user), 
-        )
+        data=UserResponse.model_validate(user),
+    )
 
 
 @router.post(
@@ -126,10 +139,10 @@ async def create_user(
     request: UserCreateRequest,
     service: UserService = Depends(get_user_service),
 ) -> APIResponse[UserResponse]:
-    user_response  =  await service.create_user(request)
+    user_response = await service.create_user(request)
 
     return APIResponse(
-        success= True,
+        success=True,
         message="User created successfully",
         data=user_response,
     )
@@ -153,15 +166,15 @@ async def update_user(
             detail="User not found.",
         )
 
-    update_user =  await service.update_user(
+    update_user = await service.update_user(
         user,
         request,
     )
 
     return APIResponse(
-        success= True,
-        message= "User updated successfully",
-        data= UserResponse.model_validate(update_user),
+        success=True,
+        message="User updated successfully",
+        data=UserResponse.model_validate(update_user),
     )
 
 
@@ -182,10 +195,9 @@ async def delete_user(
             detail="User not found.",
         )
 
-    deleted_user =  await service.delete_user(user)
+    deleted_user = await service.delete_user(user)
     return APIResponse(
-        success= True,
+        success=True,
         message="User deleted successfully.",
-        data=UserResponse.model_validate(deleted_user),  
+        data=UserResponse.model_validate(deleted_user),
     )
-

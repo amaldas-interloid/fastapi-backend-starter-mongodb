@@ -53,31 +53,21 @@ class BaseRepository(Generic[DocumentType]):
         await document.delete()
 
     async def get_paginated(
-            self,
-            page: int,
-            page_size: int,
+        self,
+        page: int,
+        page_size: int,
     ) -> PaginatedResponse:
         skip = (page - 1) * page_size
 
         total = await self.model.count()
 
-        documents = (
-            await self.model.find_all()
-            .skip(skip)
-            .limit(page_size)
-            .to_list()
-        )
+        documents = await self.model.find_all().skip(skip).limit(page_size).to_list()
 
         pages = (total + page_size - 1) // page_size
 
         return PaginatedResponse(
             items=documents,
             pagination=PaginationResponse(
-                page=page,
-                page_size=page_size,
-                total=total,
-                pages=pages
-            )
+                page=page, page_size=page_size, total=total, pages=pages
+            ),
         )
-        
-        

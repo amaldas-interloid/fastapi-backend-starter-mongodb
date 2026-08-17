@@ -79,6 +79,7 @@ async def test_rate_limit_returns_429_when_exceeded(
         settings.REDIS_RATE_LIMIT_WINDOW,
     )
 
+
 @pytest.mark.anyio
 async def test_rate_limit_sets_expiration_on_first_request(
     monkeypatch,
@@ -134,7 +135,6 @@ async def test_rate_limit_fails_open_when_redis_unavailable(
         response = await client.get("/")
 
     assert response.status_code == 200
-
 
 
 @pytest.mark.anyio

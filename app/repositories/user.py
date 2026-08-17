@@ -57,7 +57,7 @@ class UserRepository(BaseRepository[User]):
     ) -> User | None:
         return await self.model.find_one(
             self.model.email == email,
-            self.model.is_deleted == False, # noqa: E712
+            self.model.is_deleted == False,  # noqa: E712
         )
 
     async def get_by_username(
@@ -142,4 +142,3 @@ class UserRepository(BaseRepository[User]):
         await user.save()
 
         return user
-

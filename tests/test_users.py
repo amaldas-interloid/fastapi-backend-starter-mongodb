@@ -40,47 +40,55 @@ def user_service(
 
 
 @pytest.mark.anyio
-async def test_create_user_success( 
-    user_service: UserService, 
-    user_repository: MagicMock, 
+async def test_create_user_success(
+    user_service: UserService,
+    user_repository: MagicMock,
     monkeypatch,
-): 
-    user_repository.get_by_email = AsyncMock( 
-        return_value=None,
-    ) 
-    user_repository.get_by_username = AsyncMock( 
+):
+    user_repository.get_by_email = AsyncMock(
         return_value=None,
     )
-    created_user = create_mock_user() 
-    user_repository.create = AsyncMock( 
-        return_value=created_user, 
-    ) 
-    mock_user = MagicMock( 
-        return_value=created_user, 
-    ) 
-    monkeypatch.setattr( 
-        "app.services.user.User", mock_user, 
-    ) 
+    user_repository.get_by_username = AsyncMock(
+        return_value=None,
+    )
+    created_user = create_mock_user()
+    user_repository.create = AsyncMock(
+        return_value=created_user,
+    )
+    mock_user = MagicMock(
+        return_value=created_user,
+    )
+    monkeypatch.setattr(
+        "app.services.user.User",
+        mock_user,
+    )
     request = UserCreateRequest(
-         username="testuser", 
-         email="test@example.com", 
-         password="password123", 
-         first_name="Test", 
-         last_name="User", 
-    ) 
-    result = await user_service.create_user(request) 
-    assert result is created_user 
-    user_repository.get_by_email.assert_awaited_once_with( request.email, )
-    user_repository.get_by_username.assert_awaited_once_with( request.username, )
-    user_repository.create.assert_awaited_once_with( created_user, )
-    mock_user.assert_called_once() 
+        username="testuser",
+        email="test@example.com",
+        password="password123",
+        first_name="Test",
+        last_name="User",
+    )
+    result = await user_service.create_user(request)
+    assert result is created_user
+    user_repository.get_by_email.assert_awaited_once_with(
+        request.email,
+    )
+    user_repository.get_by_username.assert_awaited_once_with(
+        request.username,
+    )
+    user_repository.create.assert_awaited_once_with(
+        created_user,
+    )
+    mock_user.assert_called_once()
     call_kwargs = mock_user.call_args.kwargs
 
-    assert call_kwargs["email"] == request.email 
+    assert call_kwargs["email"] == request.email
     assert call_kwargs["username"] == request.username
     assert call_kwargs["first_name"] == request.first_name
     assert call_kwargs["last_name"] == request.last_name
     assert call_kwargs["hashed_password"] != request.password
+
 
 @pytest.mark.anyio
 async def test_create_user_duplicate_email(
@@ -373,4 +381,3 @@ async def test_delete_user(
     user_repository.soft_delete.assert_awaited_once_with(
         user,
     )
-

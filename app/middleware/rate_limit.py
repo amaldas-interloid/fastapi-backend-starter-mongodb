@@ -33,10 +33,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     status_code=429,
                     content={
                         "success": False,
-                        "message": (
-                            "Rate limit exceeded. "
-                            "Please try again later."
-                        ),
+                        "message": ("Rate limit exceeded. Please try again later."),
                         "data": None,
                     },
                     headers={
@@ -45,7 +42,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         ),
                     },
                 )
-                
 
         except RedisError:
             # Do not make Redis failure bring down the API.

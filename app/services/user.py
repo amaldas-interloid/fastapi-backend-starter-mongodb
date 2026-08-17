@@ -60,9 +60,7 @@ class UserService:
     ) -> tuple[list[User], int]:
         skip = (page - 1) * page_size
 
-        sort_direction = (
-            1 if sort_order == SortOrder.ASC else -1
-        )
+        sort_direction = 1 if sort_order == SortOrder.ASC else -1
 
         users = await self.user_repository.get_all_users(
             skip=skip,
@@ -108,24 +106,16 @@ class UserService:
                 data["email"],
             )
 
-            if (
-                existing_email is not None
-                and existing_email.id != user.id
-            ):
+            if existing_email is not None and existing_email.id != user.id:
                 raise UserAlreadyExistsException()
 
         # Check duplicate username
         if "username" in data:
-            existing_username = (
-                await self.user_repository.get_by_username(
-                    data["username"],
-                )
+            existing_username = await self.user_repository.get_by_username(
+                data["username"],
             )
 
-            if (
-                existing_username is not None
-                and existing_username.id != user.id
-            ):
+            if existing_username is not None and existing_username.id != user.id:
                 raise UsernameAlreadyExistsException()
 
         # Hash password before storing
@@ -144,4 +134,3 @@ class UserService:
         user: User,
     ) -> User:
         return await self.user_repository.soft_delete(user)
-

@@ -19,9 +19,7 @@ def test_request_logging():
 
     client = TestClient(app)
 
-    with patch(
-        "app.middleware.request_logging.logger.info"
-    ) as mock_logger:
+    with patch("app.middleware.request_logging.logger.info") as mock_logger:
         response = client.get("/test")
 
     assert response.status_code == 200

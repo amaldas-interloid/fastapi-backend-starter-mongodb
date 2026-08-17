@@ -31,7 +31,6 @@ async def lifespan(app: FastAPI):
     await connect_to_redis()
     logger.info("Redis connected")
 
-
     logger.info("Application started")
 
     yield
@@ -41,7 +40,6 @@ async def lifespan(app: FastAPI):
 
     await close_mongodb_connection()
     logger.info("MongoDB disconnected")
-
 
     logger.info("Application stopped")
 

@@ -26,14 +26,14 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, gt=0)
     REFRESH_TOKEN_EXPIRE_DAYS: int = Field(default=7, gt=0)
 
-    #seed default password
+    # seed default password
     SEED_DEFAULT_PASSWORD: str
 
-    REDIS_HOST: str 
-    REDIS_PORT: int 
-    REDIS_DB: int 
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_DB: int
 
-    REDIS_RATE_LIMIT: int 
+    REDIS_RATE_LIMIT: int
     REDIS_RATE_LIMIT_WINDOW: int
 
     model_config = SettingsConfigDict(
@@ -44,4 +44,4 @@ class Settings(BaseSettings):
     )
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
